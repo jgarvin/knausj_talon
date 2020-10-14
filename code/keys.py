@@ -139,27 +139,30 @@ ctx.lists["self.arrow_key"] = {
     "left": "left",
     "right": "right",
     "up": "up",
+
+simple_keys = {
+    "edge" : "end",
+    "slap" : "enter",
+    "axe" : "escape",
+    "home" : "home",
+    "insert" : "insert",
+    "leaf" : "pagedown",
+    "feel" : "pageup",
+    "pow" : "space",
+    "scoot" : "tab"
 }
 
-simple_keys = [
-    "end",
-    "enter",
-    "escape",
-    "home",
-    "insert",
-    "pagedown",
-    "pageup",
-    "space",
-    "tab",
-]
 
 alternate_keys = {
     "knock": "backspace",
     "bonk": "delete",
     #'junk': 'backspace',
 }
-keys = {k: k for k in simple_keys}
+
+keys = {}
+keys.update(simple_keys)
 keys.update(alternate_keys)
+
 ctx.lists["self.special_key"] = keys
 ctx.lists["self.function_key"] = {
     f"F {default_f_digits[i]}": f"f{i + 1}" for i in range(12)
