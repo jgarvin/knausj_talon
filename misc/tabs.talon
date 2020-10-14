@@ -1,7 +1,9 @@
 tag: user.tabs
 -
 tab (open | new): app.tab_open()
-tab last: app.tab_previous()
+tab previous: app.tab_previous()
+tab move previous: key(ctrl-shift-pgup)
+tab move next: key(ctrl-shift-pgdown)
 tab next: app.tab_next()
 tab close: app.tab_close()
 tab reopen: app.tab_reopen()
