@@ -17,10 +17,10 @@ cap <user.text>:
     result = user.formatted_text(user.text, "CAPITALIZE_FIRST_WORD")
     auto_insert(result)
 #navigation
-go up <number_small> lines:
+hike <number_small> lines:
     edit.up()
     repeat(number_small - 1)
-go down <number_small> lines:
+slide <number_small> lines:
     edit.down()
     repeat(number_small - 1)
 go left <number_small> words: 

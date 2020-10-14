@@ -135,10 +135,11 @@ ctx.lists["self.symbol_key"] = {
 
 ctx.lists["self.number_key"] = dict(zip(default_digits, numbers))
 ctx.lists["self.arrow_key"] = {
-    "down": "down",
+    "slide": "down",
     "left": "left",
     "right": "right",
-    "up": "up",
+    "hike": "up",
+}
 
 simple_keys = {
     "edge" : "end",
