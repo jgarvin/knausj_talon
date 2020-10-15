@@ -4,28 +4,28 @@ find it:
 next one:
     edit.find_next()
 
-go word left:
+per:
     edit.word_left()
 
-go word right:
+pro:
     edit.word_right()
 
-go left:
+left:
     edit.left()
 
-go right:
+right:
     edit.right()
 
-go up:
+hike:
     edit.up()
 
-go down:
+slide:
     edit.down()
 
-go line start:
+home:
     edit.line_start()
 
-go line end:
+edge:
     edit.line_end()
 
 go way left:
@@ -97,11 +97,20 @@ indent [more]:
 clear line:
     edit.delete_line()
 
-clear left:
+knock:
     key(backspace)
 
-clear right:
+bonk:
     key(delete)
+
+chip:
+    key(ctrl-backspace)
+
+pitch:
+    key(ctrl-delete)
+
+top side: key(ctrl-home)
+bottom: key(ctrl-end)
 
 clear up:
     edit.extend_line_up()
@@ -136,48 +145,48 @@ clear way down:
     edit.delete()
 
 #copy commands
-copy all: 
+copy all:
     edit.select_all()
     edit.copy()
 #to do: do we want these variants, seem to conflict
-# copy left: 
+# copy left:
 #      edit.extend_left()
 #      edit.copy()
-# copy right: 
+# copy right:
 #     edit.extend_right()
 #     edit.copy()
-# copy up: 
+# copy up:
 #     edit.extend_up()
 #     edit.copy()
-# copy down: 
+# copy down:
 #     edit.extend_down()
 #     edit.copy()
-copy word left: 
+copy word left:
     edit.extend_word_left()
     edit.copy()
-copy word right: 
+copy word right:
     edit.extend_word_right()
     edit.copy()
 #cut commands
-cut everything: 
+cut everything:
     edit.select_all()
     edit.cut()
 #to do: do we want these variants
-# cut left: 
+# cut left:
 #      edit.select_all()
 #      edit.cut()
-# cut right: 
+# cut right:
 #      edit.select_all()
 #      edit.cut()
-# cut up: 
+# cut up:
 #      edit.select_all()
 #     edit.cut()
-# cut down: 
+# cut down:
 #     edit.select_all()
 #     edit.cut()
-cut word left: 
+cut word left:
     edit.extend_word_left()
     edit.cut()
-cut word right: 
+cut word right:
     edit.extend_word_right()
     edit.cut()
