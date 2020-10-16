@@ -144,6 +144,10 @@ clear way down:
     edit.extend_file_end()
     edit.delete()
 
+cut: key(ctrl-x)
+copy: key(ctrl-c)
+paste: edit.paste()
+
 #copy commands
 copy all:
     edit.select_all()
