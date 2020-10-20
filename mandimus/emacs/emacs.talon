@@ -9,13 +9,13 @@ command: key(alt-x)
 
 exit debug: key(ctrl-t x a)
 
-#toggle emacs debug
+toggle emacs debug: user.emacs_lisp("(toggle-debug-on-error)")
 
 go to line: key(alt-g alt-g)
 
-#new frame
+new frame: key(ctrl-t 5 2)
 
-#minibuffer
+minibuffer: user.emacs_lisp("(md-select-minibuffer)")
 
 list buffs: key(ctrl-t ctrl-b ctrl-t o)
 
@@ -46,29 +46,28 @@ find file: user.minibuffer("find-name-dired")
 switch buff: key(ctrl-t b)
 destroy buff: key(ctrl-t k enter)
 
-# show home folder
-# show temp folder
-# show root folder
+show home folder: user.emacs_lisp("(find-file \"~\")")
+show temp folder: user.emacs_lisp("(find-file \"/tmp\")")
+show root folder: user.emacs_lisp("(find-file \"/\")")
 
 start irc: user.minibuffer("irc-maybe")
 stop irc: user.minibuffer("stop-irc")
-# stop irc
-# toggle tail mode
+toggle tail mode: user.emacs_lisp("(auto-revert-tail-mode)")
 list packages: user.minibuffer("list-packages")
 
 get status: key(ctrl-t g)
 
-# open terminal
-# open temp
+open terminal: user.emacs_lisp("(etc-start-or-open-terminal)")
+open temp: user.emacs_lisp("(md-create-temp-file \"temp\")")
 
 magnify: key(ctrl-t ctrl-+)
 demagnify: key(ctrl-t ctrl--)
 
 visual line mode: user.minibuffer("visual-line-mode")
 
-# set indent
+set indent <number_small>: user.emacs_lisp("(etc-set-indent-preference {number_small})")
 
-# toggle namespace indent
+toggle namespace indent: user.emacs_lisp("(etc-toggle-namespace-indent)")
 
 toggle read only: key(ctrl-t ctrl-q)
 
@@ -84,7 +83,7 @@ help syntax: key(ctrl-h s)
 help bindings: key(ctrl-h s)
 inspect character: key(ctrl-u ctrl-t =)
 
-# axe
+axe: user.emacs_query("(setq unread-command-events (append unread-command-events (list ?\\C-g)))")
 super axe: key(ctrl-g)
 eval: key(ctrl-t ctrl-e)
 start macro: key(F3)
@@ -112,7 +111,7 @@ comment: key(alt-;)
 
 kill: key(ctrl-k)
 
-# squeeze
+squeeze: user.emacs_lisp("(cycle-spacing)")
 
 paste: key(ctrl-y)
 rotate: key(alt-y)
@@ -122,18 +121,23 @@ fish: key(alt-space)
 undo: key(ctrl-/)
 redo: key(alt-/)
 
-# shift right
-# shift left
+shift right: user.emacs_lisp("(call-interactively 'python-indent-shift-right)")
+shift left: user.emacs_lisp("(call-interactively 'python-indent-shift-left)")
 
 align regexp: user.minibuffer("align-regexp")
-# indent
+indent: user.emacs_lisp("(call-interactively 'indent-region)")
 
 capitalize: key(alt-c)
 bigger: key(alt-u)
 smaller: key(alt-l)
 
-# jump
-# jump char
+jump <user.unmodified_key>:
+    key(alt-enter)
+    key(unmodified_key)
+    
+jump char <user.unmodified_key>:
+    key(ctrl-u alt-enter)
+    key(unmodified_key)
 
 snap: key(ctrl-u ctrl-space)
 big snap: key(ctrl-t ctrl-space)
@@ -143,13 +147,13 @@ insert character: key(ctrl-t 8 enter)
 open this: key(ctrl-enter)
 
 shell command: user.minibuffer("etc-shell-command")
-# insert pth
-# insert base name
-# insert buffer name
-# insert name without extension
-# insert directory
-# insert extension
-# insert username
+insert path: user.emacs_insert_string("(buffer-file-name)")
+insert base name: user.emacs_insert_string("(file-name-base (buffer-file-name))")
+insert buffer name: user.emacs_insert_string("(buffer-name)")
+insert name without extension: user.emacs_insert_string("(file-name-sans-extension (buffer-file-name))")
+insert directory: user.emacs_insert_string("(file-name-directory (buffer-file-name))")
+insert extension: user.emacs_insert_string("(file-name-extension (buffer-file-name))")
+insert username: user.emacs_insert_string('(user-login-name)')
 
 switch previous: key(ctrl-t ctrl-left)
 switch next: key(ctrl-t ctrl-right)
@@ -162,7 +166,9 @@ show kill ring: key(ctrl-shift-y)
 submit: key(ctrl-c ctrl-c)
 discard: key(ctrl-c ctrl-k)
 
-# view
+view <user.unmodified_key>:
+    key(alt-d)
+    key(unmodified_key)
 
 hide block: key(ctrl-c h)
 unfold: key(ctrl-c u)
