@@ -41,6 +41,31 @@ def get_subsets(word_list: [T], subsets=None) -> Set[Tuple[T, ...]]:
         get_subsets(word_list[0:i] + word_list[i+1:len(word_list)], subsets)
     return subsets
 
+ones_and_teens = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+                  "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
+tens = ["", "", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+
+def translate_number(digits_string):
+    """Translate a string of digits to words describing a series of
+numbers between 0-99. So 1050 becomes ten fifty. Necessary because
+wav2letter doesn't understand digits directly."""
+    
+    num = int(digits_string)
+    if num < 0:
+         # remove hypen
+        return ["negative"] + translate_number(digits_string[1:])
+    elif num >= 100:
+        # evaluate in pairs, so 1050 becomes "ten fifty"
+        return translate_number(digits_string[:2]) + translate_number(digits_string[2:])
+    elif num <= 19:
+        return [ones_and_teens[num]]
+    else:
+        result = [tens[num // 10]]
+        ones = ones_and_teens[num % 10]
+        if ones:
+            result += [ones]
+        return result
+
 @functools.lru_cache(maxsize=None)
 def make_pronouncable(item: str) -> Tuple[str,...]:
     "Transform string into a list of words."
@@ -56,6 +81,7 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     words = [word.strip() for word in words]
     words = [word.lower() for word in words]
     words = [word_substitutions[word] if word in word_substitutions else word for word in words]
+    words = [" ".join(translate_number(word)) if word.isnumeric() else word for word in words]
     return tuple(words)
 
 def make_subset_pronunciation_map(item: str) -> Dict[str, str]:
@@ -101,8 +127,10 @@ class ListQuery(object):
         mod.capture(f)
 
         # then we implement them on the context
-        @ctx.capture(f"user.{name}", rule=f"{{user.{name}_list}}")
+        @ctx.capture(f"user.{name}", rule=f"[{{user.{name}_list}}]")
         def local_capture(m) -> Set[str]:
+            if not m:
+                return None
             incoming = " ".join(list(m))
             return incoming
 
