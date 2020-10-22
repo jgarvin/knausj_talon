@@ -18,7 +18,7 @@ ctx = Context()
 def emacs_unit(m) -> str:
     "Returns name of unit that can be cut/copy/pasted, e.g. word, symbol, line, filename, etc."
 
-@ctx.capture("user.emacs_unit", rule="[(word | symbol | line | filename | paragraph)]")
+@ctx.capture("user.emacs_unit", rule="[(word | symbol | line | filename | paragraph | buffer)]")
 def emacs_unit_impl(m) -> Optional[str]:
     return " ".join(list(m))
 

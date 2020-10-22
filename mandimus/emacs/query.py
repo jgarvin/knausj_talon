@@ -69,19 +69,29 @@ wav2letter doesn't understand digits directly."""
 @functools.lru_cache(maxsize=None)
 def make_pronouncable(item: str) -> Tuple[str,...]:
     "Transform string into a list of words."
+#    log.info(f"item: {item}")
     words = item.translate(delete_punctuation)
+#    log.info(f"words1: {words}")
     # delete weird unicode chars
     words = ''.join([c if c in string.printable else ' ' for c in words if c in string.printable])
+#    log.info(f"words2: {words}")
     words = words.split()
+#    log.info(f"words3: {words}")
     words = [decamelize(word) for word in words]
+#    log.info(f"words4: {words}")
     new_words = []
     for word in words:
         new_words.extend(word)
     words = new_words
+#    log.info(f"words5: {words}")
     words = [word.strip() for word in words]
+#    log.info(f"words6: {words}")
     words = [word.lower() for word in words]
+#    log.info(f"words7: {words}")
     words = [word_substitutions[word] if word in word_substitutions else word for word in words]
+#    log.info(f"words8: {words}")
     words = [" ".join(translate_number(word)) if word.isnumeric() else word for word in words]
+#    log.info(f"words9: {words}")
     return tuple(words)
 
 def make_subset_pronunciation_map(item: str) -> Dict[str, str]:
@@ -160,9 +170,13 @@ class ListQuery(object):
         self.pronunciation_map = data
         if self.logging:
             pprint(self.pronunciation_map)
+            log.info(f"Loading list with length: {len(data.keys())}")
         self.ctx.lists[f"user.{self.name}_list"] = data.keys()
 
     def get_choice(self, incoming):
+        return self.get_choice_and_whether_cycling(incoming)[0]
+
+    def get_choice_and_whether_cycling(self, incoming):
 #        log.info("============================================")
 #        pprint(incoming)
         if incoming not in self.pronunciation_map:
@@ -177,11 +191,14 @@ class ListQuery(object):
 
 #        pprint(possibilities)
         current = self._current_choice()
+        log.info(f"Current choice: {current}")
         choice = None
+        cycling = False
         # are we already on a matching option? if so pick the next match.
         if current in possibilities:
             index = possibilities.index(current)
             choice = possibilities[(index+1) % len(possibilities)]
+            cycling = True
         # If not, check what we switched to last time. Why is this
         # desirable? Say I have foo.talon, foo.py, and bar.py open. I
         # say "buff py" and I get foo.py, but I wanted bar.py, so I
@@ -196,6 +213,6 @@ class ListQuery(object):
         if choice is None:
             choice = possibilities[0]
         self.last_choice_map[incoming] = choice
-        return choice
+        return (choice, cycling)
 
 #log.info(get_subsets([1, 2, 3, 4]))
