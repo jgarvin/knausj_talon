@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from talon import Module, Context, cron
-from typing import Union, List, Dict, TypeVar, Set, Tuple
+from typing import Union, List, Dict, TypeVar, Set, Tuple, Optional
 from user.knausj_talon.mandimus.emacs.connection import runEmacsCmd
 from user.knausj_talon.mandimus.emacs.word_utils import decamelize
 from user.knausj_talon.code.keys import alphabet
@@ -49,7 +49,7 @@ def translate_number(digits_string):
     """Translate a string of digits to words describing a series of
 numbers between 0-99. So 1050 becomes ten fifty. Necessary because
 wav2letter doesn't understand digits directly."""
-    
+
     num = int(digits_string)
     if num < 0:
          # remove hypen
@@ -105,7 +105,7 @@ pronunciations are mapped to sets."""
     return m
 
 class ListQuery(object):
-    def __init__(self, mod: Module, ctx: Context, name: str, cmd: str, interval_ms=1000):
+    def __init__(self, mod: Module, ctx: Context, name: str, cmd: str, interval_ms=1000, allow_subsets=True, capture_required=False):
         self.name = name
         self.cmd = cmd
         self.interval_ms = interval_ms
@@ -117,6 +117,7 @@ class ListQuery(object):
         self.pronunciation_map = {}
         self.last_choice_map = {}
         self.logging = False
+        self.allow_subsets = allow_subsets
 
         # we declare capture on the modules
         def local_mod_declaration(m) -> str:
@@ -127,8 +128,11 @@ class ListQuery(object):
         mod.capture(f)
 
         # then we implement them on the context
-        @ctx.capture(f"user.{name}", rule=f"[{{user.{name}_list}}]")
-        def local_capture(m) -> Set[str]:
+        r = f"{{user.{name}_list}}"
+        if not capture_required:
+            r = "[" + r + "]"
+        @ctx.capture(f"user.{name}", rule=r)
+        def local_capture(m) -> Optional[str]:
             if not m:
                 return None
             incoming = " ".join(list(m))
@@ -137,7 +141,7 @@ class ListQuery(object):
         cron.interval(f"{interval_ms}ms", self._update)
 
     def _current_choice(self) -> str:
-        raise NotImplemented()
+        raise NotImplementedError
 
     def _update(self):
         output = runEmacsCmd(self.cmd)
@@ -146,8 +150,11 @@ class ListQuery(object):
         processed = self._post_process(output)
         self._commit(processed)
 
-    def _post_process(self, data: str) -> Union[List[str], Dict[str, str]]:
-        return get_pronunciation_map(get_string_list(data))
+    def _post_process(self, data: str) -> Dict[str, Set[str]]:
+        strings = get_string_list(data)
+        if self.allow_subsets:
+            return get_pronunciation_map(strings)
+        return {" ".join(make_pronouncable(s)):{s} for s in strings}
 
     def _commit(self, data: Dict[str, Set[str]]):
         self.pronunciation_map = data
@@ -160,14 +167,21 @@ class ListQuery(object):
 #        pprint(incoming)
         if incoming not in self.pronunciation_map:
             return None
+
         possibilities = list(self.pronunciation_map[incoming])
+
+        # need to split out subset functionality somehow... snippets
+        # are really just exact matching
+        if not self.allow_subsets:
+            return possibilities[0]
+
 #        pprint(possibilities)
         current = self._current_choice()
         choice = None
         # are we already on a matching option? if so pick the next match.
         if current in possibilities:
             index = possibilities.index(current)
-            choice = possibilities[(index+1) % len(possibilities)]
+            choice = possibilities[(index+a) % len(possibilities)]
         # If not, check what we switched to last time. Why is this
         # desirable? Say I have foo.talon, foo.py, and bar.py open. I
         # say "buff py" and I get foo.py, but I wanted bar.py, so I
