@@ -99,15 +99,14 @@ exchange: key(ctrl-t ctrl-t)
 select: key(ctrl-=)
 contract: key(alt-=)
 
-# copy
-# cut
-# mark
-# comment
+copy <user.emacs_unit>: user.emacs_copy(emacs_unit)
+cut <user.emacs_unit>: user.emacs_cut(emacs_unit)
+mark <user.emacs_unit>: user.emacs_mark(emacs_unit)
+comment <user.emacs_unit>: user.emacs_comment(emacs_unit)
 
-copy: key(alt-w)
-cut: key(ctrl-w)
-mark: key(ctrl-space)
-comment: key(alt-;)
+# only here to override generic_editor definitions
+copy: user.emacs_copy("")
+cut: user.emacs_cut("")
 
 kill: key(ctrl-k)
 
@@ -134,7 +133,7 @@ smaller: key(alt-l)
 jump <user.unmodified_key>:
     key(alt-enter)
     key(unmodified_key)
-    
+
 jump char <user.unmodified_key>:
     key(ctrl-u alt-enter)
     key(unmodified_key)

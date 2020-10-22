@@ -1,4 +1,6 @@
-from talon import actions, Module
+from talon import actions, Module, Context
+from typing import Optional
+import logging as log
 from user.knausj_talon.mandimus.emacs.connection import runEmacsCmd
 
 def emacsChar(char):
@@ -10,6 +12,15 @@ def emacsChar(char):
     return "".join(c)
 
 mod = Module()
+ctx = Context()
+
+@mod.capture
+def emacs_unit(m) -> str:
+    "Returns name of unit that can be cut/copy/pasted, e.g. word, symbol, line, filename, etc."
+
+@ctx.capture("user.emacs_unit", rule="[(word | symbol | line | filename | paragraph)]")
+def emacs_unit_impl(m) -> Optional[str]:
+    return " ".join(list(m))
 
 @mod.action_class
 class Actions:
@@ -37,3 +48,28 @@ class Actions:
         "Run emacslisp and insert resulting text into the buffer."
         data = "(md-insert-text %s nil nil)" % stringReturningElisp
         runEmacsCmd(data)
+
+    def emacs_mark(unit: Optional[str]):
+        "Mark a unit of text in emacs."
+        if unit is None:
+            actions.key("ctrl-space")
+            return
+        runEmacsCmd(f"(md-mark-thing '{unit})")
+
+    def emacs_copy(unit: Optional[str]):
+        "Copy a unit of text in emacs."
+        if unit is not None and unit != "":
+            Actions.emacs_mark(unit)
+        actions.key("alt-w")
+        
+    def emacs_cut(unit: Optional[str]):
+        "Cut a unit of text in emacs."
+        if unit is not None and unit != "":
+            Actions.emacs_mark(unit)
+        actions.key("ctrl-w")
+        
+    def emacs_comment(unit: Optional[str]):
+        "Comment a unit of text in emacs."
+        if unit is not None and unit != "":
+            Actions.emacs_mark(unit)
+        actions.key("alt-;")

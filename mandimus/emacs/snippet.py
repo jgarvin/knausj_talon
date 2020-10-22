@@ -21,7 +21,5 @@ SNIPPETS = Snippets()
 class Actions:
     def emacs_insert_snippet(snippet_name: str):
         "Insert emacs snippet."
-        pprint("wat")
-        pprint(snippet_name)
         snippet = SNIPPETS.get_choice(snippet_name)
         runEmacsCmd(f"(md-insert-snippet \"{snippet}\")")
