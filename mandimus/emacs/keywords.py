@@ -37,9 +37,9 @@ def switch_keywords(modes: [str]):
     for mode in modes:
         if mode in keywords:
             active_set.update(keywords[mode])
-    log.info("setting active keywords")
-    from pprint import pprint
-    pprint(active_set)
+#    log.info("setting active keywords")
+#    from pprint import pprint
+#    pprint(active_set)
     ctx.lists["user.emacs_language_keywords"] = active_set
 
 _buffer_mode_subscription = subscribe_buffer_mode(switch_keywords)
