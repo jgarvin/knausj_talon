@@ -24,8 +24,8 @@ def on_phrase(j):
         history.append(val)
         history = history[-hist_len:]
 
-        if gui.showing:
-            gui.freeze()
+        #if gui.showing:
+        #    gui.freeze()
 
 
 # todo: dynamic rect?
