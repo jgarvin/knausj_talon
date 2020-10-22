@@ -51,7 +51,7 @@ class Actions:
 
     def emacs_mark(unit: Optional[str]):
         "Mark a unit of text in emacs."
-        if unit is None:
+        if unit is None or unit == "":
             actions.key("ctrl-space")
             return
         runEmacsCmd(f"(md-mark-thing '{unit})")
