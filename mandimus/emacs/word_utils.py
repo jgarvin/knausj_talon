@@ -21,6 +21,10 @@ def decamelize(word):
     # temporary hack, need better parsing
     mixedCase = len({category(c) for c in word}) > 1
 
+    # think this originally did more splitting, but in talon we always remove special letters first...
+    if not mixedCase:
+        return [word]
+
     for i, c in enumerate(word):
         newCategory = category(c)
         isLast = i == len(word)-1
