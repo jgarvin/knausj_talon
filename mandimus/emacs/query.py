@@ -181,7 +181,7 @@ class ListQuery(object):
         # are we already on a matching option? if so pick the next match.
         if current in possibilities:
             index = possibilities.index(current)
-            choice = possibilities[(index+a) % len(possibilities)]
+            choice = possibilities[(index+1) % len(possibilities)]
         # If not, check what we switched to last time. Why is this
         # desirable? Say I have foo.talon, foo.py, and bar.py open. I
         # say "buff py" and I get foo.py, but I wanted bar.py, so I
