@@ -19,6 +19,9 @@ class BufferNames(ListQuery):
         return runEmacsCmd("(buffer-name (current-buffer))").strip().strip('"')
 
     def switch_no_choice(self):
+        self.switch_most_recent()
+
+    def switch_most_recent(self):
         runEmacsCmd("(md-switch-to-next-buffer-in-list %s)" % self.base_query, queryOnly=False)
 
     def switch_buffer(self, incoming: Optional[str] = None):
@@ -96,23 +99,46 @@ class Actions:
         "Switch to buffer."
         GENERAL_BUFFER_NAMES.switch_buffer(buffer_name)
 
+    def switch_last_buffer():
+        "Switch to last buffer."
+        GENERAL_BUFFER_NAMES.switch_most_recent()
+
     def switch_folder(buffer_name: Optional[str]):
         "Switch to folder."
         FOLDER_NAMES.switch_buffer(buffer_name)
+
+    def switch_last_folder():
+        "Switch to last folder."
+        FOLDER_NAMES.switch_most_recent()
 
     def switch_shell(buffer_name: Optional[str]):
         "Switch to shell."
         SHELL_NAMES.switch_buffer(buffer_name)
 
+    def switch_last_shell():
+        "Switch to last shell."
+        SHELL_NAMES.switch_most_recent()
+
     def switch_eshell(buffer_name: Optional[str]):
         "Switch to eshell."
         ESHELL_NAMES.switch_buffer(buffer_name)
+
+    def switch_last_eshell():
+        "Switch to last eshell."
+        ESHELL_NAMES.switch_most_recent()
 
     def switch_channel(buffer_name: Optional[str]):
         "Switch to channel."
         CHANNEL_NAMES.switch_buffer(buffer_name)
 
+    def switch_last_channel():
+        "Switch to last channel."
+        GENERAL_CHANNEL_NAMES.switch_most_recent()
+
     def switch_special(buffer_name: Optional[str]):
         "Switch to special."
         SPECIAL_NAMES.switch_buffer(buffer_name)
-        
+
+    def switch_last_special():
+        "Switch to last special."
+        SPECIAL_NAMES.switch_most_recent()
