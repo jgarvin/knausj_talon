@@ -13,8 +13,8 @@ sleep all:
     user.mouse_sleep()
     speech.disable()
     user.engine_sleep()
-wake up: speech.disable()
-snore: speech.enable()
+wake up: speech.enable()
+snore: speech.disable()
 dragon mode: speech.disable()
 talon mode: speech.enable()
 ^dictation mode$:
