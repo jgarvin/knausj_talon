@@ -25,6 +25,8 @@ class TokenNames(ListQuery):
         choice, cycling = self.get_choice_and_whether_cycling(incoming)
         if cycling:
             actions.key("ctrl-w")
+            actions.user.emacs_insert_no_space(choice)
+            return
         actions.insert(choice)
 
 TOKEN_NAMES = TokenNames(mod, ctx)
@@ -34,4 +36,3 @@ class Actions:
     def emacs_insert_token(buffer_name: Optional[str]):
         "Insert nearby token into buffer."
         TOKEN_NAMES.insert_token(buffer_name)
-
