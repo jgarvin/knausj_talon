@@ -14,6 +14,11 @@ def emacsChar(char):
 mod = Module()
 ctx = Context()
 
+ctx.matches = """
+os: linux
+app: emacs
+"""
+
 @mod.capture
 def emacs_unit(m) -> str:
     "Returns name of unit that can be cut/copy/pasted, e.g. word, symbol, line, filename, etc."
@@ -21,6 +26,12 @@ def emacs_unit(m) -> str:
 @ctx.capture("user.emacs_unit", rule="[(word | symbol | line | filename | paragraph | buffer)]")
 def emacs_unit_impl(m) -> Optional[str]:
     return " ".join(list(m))
+
+@ctx.action_class("main")
+class emacs_main_overrides:
+    def insert(text: str):
+        # t t = capital check, space check
+        runEmacsCmd(f"(md-insert-text \"{text}\" t t)")
 
 @mod.action_class
 class Actions:
@@ -61,13 +72,13 @@ class Actions:
         if unit is not None and unit != "":
             Actions.emacs_mark(unit)
         actions.key("alt-w")
-        
+
     def emacs_cut(unit: Optional[str]):
         "Cut a unit of text in emacs."
         if unit is not None and unit != "":
             Actions.emacs_mark(unit)
         actions.key("ctrl-w")
-        
+
     def emacs_comment(unit: Optional[str]):
         "Comment a unit of text in emacs."
         if unit is not None and unit != "":
