@@ -95,7 +95,8 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     return tuple(words)
 
 def make_subset_pronunciation_map(item: str) -> Dict[str, str]:
-    return {" ".join(subset) : item for subset in get_subsets(make_pronouncable(item))}
+    SUBSET_LIMIT = 8 # prevent subset size explosion for very long strings
+    return {" ".join(subset) : item for subset in get_subsets(make_pronouncable(item)[:SUBSET_LIMIT])}
 
 def get_pronunciation_map(items: [str]) -> Dict[str, Set[str]]:
     """Takes list of items we'd like to dictate and makes them
