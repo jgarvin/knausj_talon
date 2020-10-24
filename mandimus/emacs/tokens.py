@@ -19,7 +19,6 @@ class TokenNames(ListQuery):
         return runEmacsCmd("(substring-no-properties (let ((sym (thing-at-point 'symbol))) (if sym sym \"\")))").strip().strip('"')
 
     def insert_token(self, incoming: Optional[str] = None):
-        log.info("***********************************")
         if incoming is None:
             self.switch_no_choice()
             return
