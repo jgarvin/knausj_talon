@@ -174,6 +174,7 @@ class ListQuery(object):
             pprint(self.pronunciation_map)
             log.info(f"Loading list with length: {len(data.keys())}")
         self.ctx.lists[f"user.{self.name}_list"] = data.keys()
+        self.ctx.lists[f"user.{self.name}_list"] = list(data.keys())
 
     def get_choice(self, incoming) -> str:
         return self.get_choice_and_whether_cycling(incoming)[0]
