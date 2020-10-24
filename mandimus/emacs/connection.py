@@ -2,6 +2,7 @@ from talon import Module, actions, ui, fs
 import logging as log
 import socket
 import fcntl
+import threading # this code isn't threaded, but maybe talon is?
 
 logCommands = False
 def toggleCommandLogging(*args):
@@ -171,44 +172,47 @@ class CommandClient(object):
         return out
 
 
+EMACS_LOCK = threading.Lock()
+
 def _choose_command_client(win):
-    global allCommandClients
-    global clientInst
+    with EMACS_LOCK:
+        global allCommandClients
+        global clientInst
 
-    key = None
-    try:
-        window_name = win.title
-        host_and_port_string = window_name.rsplit("mandimus[")[1]
-        host_and_port_string = host_and_port_string.split("]")[0]
-        key = host_and_port_string.split(":")
-        key[1] = int(key[1])
-        key = tuple(key)
-    except IndexError:
-        # "emacs" not always in window title, this may just not be an emacs window
-        #log.error(f"Couldn't get host and port from emacs window: {win.title}")
-        return
+        key = None
+        try:
+            window_name = win.title
+            host_and_port_string = window_name.rsplit("mandimus[")[1]
+            host_and_port_string = host_and_port_string.split("]")[0]
+            key = host_and_port_string.split(":")
+            key[1] = int(key[1])
+            key = tuple(key)
+        except IndexError:
+            # "emacs" not always in window title, this may just not be an emacs window
+            #log.error(f"Couldn't get host and port from emacs window: {win.title}")
+            return
 
-    if key is None:
-        return
+        if key is None:
+            return
 
-    if key not in allCommandClients:
-        allCommandClients[key] = CommandClient(key[0], key[1])
+        if key not in allCommandClients:
+            allCommandClients[key] = CommandClient(key[0], key[1])
 
-    if clientInst is not allCommandClients[key]:
-        log.info("Switching to emacs: {}".format(key))
-        clientInst = allCommandClients[key]
+        if clientInst is not allCommandClients[key]:
+            log.info("Switching to emacs: {}".format(key))
+            clientInst = allCommandClients[key]
 
 loggedNoEmacs=False
 def runEmacsCmd(command, inFrame=True, dolog=False, allowError=False, queryOnly=True):
-    global clientInst
-    global loggedNoEmacs
-    if clientInst is None:
-        if not loggedNoEmacs:
-            log.info("Can't run command because not attached to any emacs: {}".format(command))
-            loggedNoEmacs = True
-        return ""
-    return clientInst.runCmd(command, inFrame, dolog, allowError, queryOnly)
+    with EMACS_LOCK:
+        global clientInst
+        global loggedNoEmacs
+        if clientInst is None:
+            if not loggedNoEmacs:
+                log.info("Can't run command because not attached to any emacs: {}".format(command))
+                loggedNoEmacs = True
+            return ""
+        return clientInst.runCmd(command, inFrame, dolog, allowError, queryOnly)
 
 ui.register('win_focus', _choose_command_client)
 ui.register('win_title', _choose_command_client)
-
