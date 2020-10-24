@@ -38,6 +38,7 @@ def gui(gui: imgui.GUI):
     for line in text:
         gui.text(line)
 
+gui.show() # show on startup
 
 speech_system.register("phrase", on_phrase)
 
