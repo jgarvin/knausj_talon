@@ -5,6 +5,8 @@ type <user.text>$:
 type <user.text> over: 
   result = user.formatted_text(text, "NOOP")
   insert(result)
+fasten <user.text>: insert(text)
+fasten <user.text> over: insert(text)
 <user.format_text>+$: user.insert_many(format_text_list)
 <user.format_text>+ over: user.insert_many(format_text_list)
 <user.formatters> that: user.formatters_reformat_selection(user.formatters)
