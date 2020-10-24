@@ -175,10 +175,10 @@ class ListQuery(object):
             log.info(f"Loading list with length: {len(data.keys())}")
         self.ctx.lists[f"user.{self.name}_list"] = data.keys()
 
-    def get_choice(self, incoming):
+    def get_choice(self, incoming) -> str:
         return self.get_choice_and_whether_cycling(incoming)[0]
 
-    def get_choice_and_whether_cycling(self, incoming):
+    def get_choice_and_whether_cycling(self, incoming) -> Tuple[str, bool]:
 #        log.info("============================================")
 #        pprint(incoming)
         if incoming not in self.pronunciation_map:
@@ -189,7 +189,7 @@ class ListQuery(object):
         # need to split out subset functionality somehow... snippets
         # are really just exact matching
         if not self.allow_subsets:
-            return possibilities[0]
+            return (possibilities[0], False)
 
 #        pprint(possibilities)
         current = self._current_choice()
