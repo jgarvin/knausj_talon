@@ -34,3 +34,5 @@ desk <user.number_key>:
     key("ctrl-alt-{k}")
     
 move desk <user.number_key>: key("ctrl-shift-alt-{number_key}")
+
+view <user.unmodified_key>: user.emacs_char_cmd("(md-select-window-with-glyph %c)", unmodified_key)
