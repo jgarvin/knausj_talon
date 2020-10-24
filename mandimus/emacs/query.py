@@ -116,6 +116,11 @@ pronunciations are mapped to sets."""
 #    pprint(m)
     return m
 
+def serialize_sets(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    return obj
+
 class ListQuery(object):
     def __init__(self, mod: Module, ctx: Context, name: str, cmd: str, interval_ms=1000, allow_subsets=True, capture_required=False):
         self.name = name
@@ -130,8 +135,9 @@ class ListQuery(object):
         self.last_choice_map = {}
         self.logging = False
         self.allow_subsets = allow_subsets
+        self.size_high_watermark = 0
 
-        # we declare capture on the modules
+        # we declare capture on the     modules
         def local_mod_declaration(m) -> str:
             pass
         f = local_mod_declaration
@@ -172,8 +178,12 @@ class ListQuery(object):
         self.pronunciation_map = data
         if self.logging:
             pprint(self.pronunciation_map)
-            log.info(f"Loading list with length: {len(data.keys())}")
-        self.ctx.lists[f"user.{self.name}_list"] = data.keys()
+        if len(data) > self.size_high_watermark:
+            log.info(f"Loading {self.name} list with length: {len(data.keys())}")
+            self.size_high_watermark = len(data)
+            with open(f"/tmp/{self.name}_high_watermark", 'w') as f:
+                import json
+                json.dump(data, f, indent=4, default=serialize_sets)
         self.ctx.lists[f"user.{self.name}_list"] = list(data.keys())
 
     def get_choice(self, incoming) -> str:
