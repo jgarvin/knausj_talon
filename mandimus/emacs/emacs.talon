@@ -20,6 +20,8 @@ minibuffer: user.emacs_lisp("(md-select-minibuffer)")
 list buffs: key(ctrl-t ctrl-b ctrl-t o)
 
 key {user.emacs_language_keywords}: insert(emacs_language_keywords)
+go key {user.emacs_language_keywords}: user.emacs_goto_next(emacs_language_keywords)
+doog key {user.emacs_language_keywords}: user.emacs_goto_previous(emacs_language_keywords)
 
 switch project: key(ctrl-c p p)
 root folder: key(ctrl-c p d)

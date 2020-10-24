@@ -84,3 +84,11 @@ class Actions:
         if unit is not None and unit != "":
             Actions.emacs_mark(unit)
         actions.key("alt-;")
+
+    def emacs_goto_next(text: str):
+        "Go to next instance of text."
+        runEmacsCmd(f"(md-go-to-next \"{text}\")")
+
+    def emacs_goto_previous(text: str):
+        "Go to previous instance of text."
+        runEmacsCmd(f"(md-go-to-previous \"{text}\")")
