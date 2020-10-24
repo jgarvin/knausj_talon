@@ -193,7 +193,7 @@ class ListQuery(object):
 #        log.info("============================================")
 #        pprint(incoming)
         if incoming not in self.pronunciation_map:
-            return None
+            return ("", False)
 
         possibilities = list(self.pronunciation_map[incoming])
 
