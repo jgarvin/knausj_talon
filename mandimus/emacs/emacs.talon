@@ -201,3 +201,5 @@ language expand: key(ctrl-c e)
 inquisition:
     user.minibuffer("magit-blame")
     key(b)
+
+fasten <user.text>: user.emacs_insert_no_space(text)

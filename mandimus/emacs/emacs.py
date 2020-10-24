@@ -39,6 +39,11 @@ class Actions:
         "Send some emacslisp to emacs to run."
         runEmacsCmd(lisp)
 
+    def emacs_insert_no_space(text: str):
+        "Insert text without automatically inserting spaces."
+        # nil nil = capital check, space check
+        runEmacsCmd(f"(md-insert-text \"{text}\" nil nil)")
+
     def emacs_query(lisp: str):
         "Send some emacslisp to emacs to run without simulating a keypress."
         return runEmacsCmd(lisp, queryOnly=True)
