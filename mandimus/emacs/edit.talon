@@ -1,5 +1,5 @@
-zap <user.unmodified_key>: user.emacs_char_cmd("(zap-move-up-to-char 1 %c)", unmodified_key)
-taze <user.unmodified_key>: user.emacs_char_cmd("(zap-move-up-to-char -1 %c)", unmodified_key)
+zap <user.unmodified_key>: user.emacs_char_cmd("(zap-up-to-char 1 %c)", unmodified_key)
+taze <user.unmodified_key>: user.emacs_char_cmd("(zap-up-to-char -1 %c)", unmodified_key)
 trans: key(control-alt-t)
 rise: key(alt-up)
 drop: key(alt-down)
