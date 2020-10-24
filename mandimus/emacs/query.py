@@ -220,7 +220,7 @@ class ListQuery(object):
         # talon" and "buff py" repeatedly will do that, because "buff
         # py" won't cycle to the next python file unless you're
         # already on one.
-        if choice is None and incoming in self.last_choice_map:
+        if choice is None and incoming in self.last_choice_map and self.last_choice_map[incoming] in possibilities:
             choice = self.last_choice_map[incoming]
         # if we never picked anything, go with the first one
         if choice is None:
