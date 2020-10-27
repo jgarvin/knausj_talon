@@ -15,6 +15,10 @@ keyword_files = {
     "c-mode" : "cpp_keywords.json",
     "c++-mode" : "cpp_keywords.json",
     "python-mode" : "python_keywords.json",
+    "emacs-lisp-mode" : "emacs_lisp_keywords.json",
+    "shell-mode" : "shell_keywords.json",
+    "sh-mode" : "shell_keywords.json",
+    "rust-mode" : "rust_keywords.json",
 }
 
 keywords = {}
