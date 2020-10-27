@@ -13,6 +13,9 @@ from copy import copy
 import functools
 from pprint import pprint
 
+# TODO: normalize pronunciations based on homophones
+# TODO: normalize pronunciations by removing redundant S's
+
 word_substitutions = {
     "py" : "pie"
 }
