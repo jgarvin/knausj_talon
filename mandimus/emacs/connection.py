@@ -3,6 +3,8 @@ import logging as log
 import socket
 import fcntl
 import threading # this code isn't threaded, but maybe talon is?
+import time
+import errno
 
 logCommands = False
 def toggleCommandLogging(*args):
@@ -31,9 +33,14 @@ class CommandClient(object):
             log.info("Requested emacs foreign host: {}:{}".format(self.host, self.port))
             from os.path import expanduser
             home = expanduser("~")
-            self.port = int(open(home + "/.emacs_ports/" + self.host).read())
+            with open(home + "/.emacs_ports/" + self.host) as f:
+                self.port = int(f.read())
             self.host = "localhost"
             log.info("Remapping through local tunnel: {}:{}".format(self.host, self.port))
+
+    def __del__(self):
+        if self.sock:
+            self.sock.close()
 
     def makeSocket(self):
         if self.sock:
@@ -178,6 +185,8 @@ def _choose_command_client(win):
     with EMACS_LOCK:
         global allCommandClients
         global clientInst
+        if win.title is None: # not sure why this happens
+            return
 
         key = None
         try:
@@ -212,7 +221,11 @@ def runEmacsCmd(command, inFrame=True, dolog=False, allowError=False, queryOnly=
                 log.info("Can't run command because not attached to any emacs: {}".format(command))
                 loggedNoEmacs = True
             return ""
-        return clientInst.runCmd(command, inFrame, dolog, allowError, queryOnly)
+        time.sleep(0.05) # let pending keypresses to remote X go through
+        r = clientInst.runCmd(command, inFrame, dolog, allowError, queryOnly)
+        # commands block, so shouldn't need the second sleep
+        #time.sleep(0.05) # give headstart to command to process before more keypresses
+        return r
 
 ui.register('win_focus', _choose_command_client)
 ui.register('win_title', _choose_command_client)
