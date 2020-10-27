@@ -5,6 +5,8 @@ from user.knausj_talon.mandimus.emacs.connection import runEmacsCmd
 
 def emacsChar(char):
     c = ["?"]
+    if char == "space":
+        char = " "
     # most characters don't need escaping, but some do
     if char in " \n\t()\\|;'`\"#.,\a\b\f\r":
         c.append("\\")
