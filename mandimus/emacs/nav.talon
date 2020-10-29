@@ -22,8 +22,9 @@ loosen: user.emacs_lisp("(md-find-indentation-change 1 '<)")
 nesool: user.emacs_lisp("(md-find-indentation-change -1 '<)")
 
 store <user.unmodified_key>: user.emacs_char_cmd("(copy-to-register %c (region-beginning) (region-end))", unmodified_key)
-bookmark <user.unmodified_key>: user.emacs_lisp("(insert-register %c)", unmodified_key)
-load <user.unmodified_key>: user.emacs_lisp("(jump-to-register %c)", unmodified_key)
+insert <user.unmodified_key>: user.emacs_char_cmd("(insert-register %c)", unmodified_key)
+bookmark <user.unmodified_key>: user.emacs_char_cmd("(point-to-register %c)", unmodified_key)
+load <user.unmodified_key>: user.emacs_char_cmd("(jump-to-register %c)", unmodified_key)
 
 previous: user.emacs_lisp("(md-get-previous-instance-of-symbol)")
 next: user.emacs_lisp("(md-get-next-instance-of-symbol)")
