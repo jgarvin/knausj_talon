@@ -10,17 +10,28 @@ per:
 pro:
     edit.word_right()
 
-left:
+# "mark slide 40" marks and then slides 40, but only if you define
+# your commands to include the number this way.
+
+left [<number_small>]:
+    x = number_small or 1
     edit.left()
+    repeat(x - 1)
 
-right:
+right [<number_small>]:
+    x = number_small or 1
     edit.right()
+    repeat(x - 1)
 
-hike:
+hike [<number_small>]:
+    x = number_small or 1
     edit.up()
+    repeat(x - 1)
 
-slide:
+slide [<number_small>]:
+    x = number_small or 1
     edit.down()
+    repeat(x - 1)
 
 home:
     edit.line_start()
@@ -28,24 +39,24 @@ home:
 edge:
     edit.line_end()
 
-go way left:
-    edit.line_start()
-    edit.line_start()
+# go way left:
+#     edit.line_start()
+#     edit.line_start()
 
-go way right:
-    edit.line_end()
+# go way right:
+#     edit.line_end()
 
-go way down:
-    edit.file_end()
+# go way down:
+#     edit.file_end()
 
-go way up:
-    edit.file_start()
+# go way up:
+#     edit.file_start()
 
-go page down:
-    edit.page_down()
+# go page down:
+#     edit.page_down()
 
-go page up:
-    edit.page_up()
+# go page up:
+#     edit.page_up()
 
 # selecting
 select line:
@@ -112,37 +123,37 @@ pitch:
 top side: key(ctrl-home)
 bottom: key(ctrl-end)
 
-clear up:
-    edit.extend_line_up()
-    edit.delete()
+# clear up:
+#     edit.extend_line_up()
+#     edit.delete()
 
-clear down:
-    edit.extend_line_down()
-    edit.delete()
+# clear down:
+#     edit.extend_line_down()
+#     edit.delete()
 
-clear word left:
-    edit.extend_word_left()
-    edit.delete()
+# clear word left:
+#     edit.extend_word_left()
+#     edit.delete()
 
-clear word right:
-    edit.extend_word_right()
-    edit.delete()
+# clear word right:
+#     edit.extend_word_right()
+#     edit.delete()
 
-clear way left:
-    edit.extend_line_start()
-    edit.delete()
+# clear way left:
+#     edit.extend_line_start()
+#     edit.delete()
 
-clear way right:
-    edit.extend_line_end()
-    edit.delete()
+# clear way right:
+#     edit.extend_line_end()
+#     edit.delete()
 
-clear way up:
-    edit.extend_file_start()
-    edit.delete()
+# clear way up:
+#     edit.extend_file_start()
+#     edit.delete()
 
-clear way down:
-    edit.extend_file_end()
-    edit.delete()
+# clear way down:
+#     edit.extend_file_end()
+#     edit.delete()
 
 cut: key(ctrl-x)
 copy: key(ctrl-c)
@@ -188,9 +199,13 @@ cut everything:
 # cut down:
 #     edit.select_all()
 #     edit.cut()
-cut word left:
-    edit.extend_word_left()
-    edit.cut()
-cut word right:
-    edit.extend_word_right()
-    edit.cut()
+# cut word left:
+#     edit.extend_word_left()
+#     edit.cut()
+# cut word right:
+#     edit.extend_word_right()
+#     edit.cut()
+
+
+magnify: key(ctrl-+)
+demagnify: key(ctrl--)
