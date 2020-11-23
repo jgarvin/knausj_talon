@@ -2,6 +2,11 @@ os: linux
 app: emacs
 -
 
+# TODO: make mode dependent
+dired copy: key(ctrl-c alt-w)
+dired cut: key(ctrl-c ctrl-w)
+dired paste: key(ctrl-c ctrl-y)
+
 # replace w/ real folder cmd later
 folder: key(ctrl-t ctrl-j)
 
