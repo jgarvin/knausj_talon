@@ -124,6 +124,8 @@ def serialize_sets(obj):
         return list(obj)
     return obj
 
+dumped_yet = False
+
 class ListQuery(object):
     def __init__(self, mod: Module, ctx: Context, name: str, cmd: str, interval_ms=1000, allow_subsets=True, capture_required=False):
         self.name = name
@@ -177,6 +179,21 @@ class ListQuery(object):
             return get_pronunciation_map(strings)
         return {" ".join(make_pronouncable(s)):{s} for s in strings}
 
+    def dump_mem(self):
+        import objgraph
+        import time
+        import io
+        output = io.StringIO()
+        objgraph.show_growth(file=output)
+        output = output.getvalue()
+        if output:
+            global dumped_yet
+            with open("/tmp/datalog", "a+" if dumped_yet else 'w') as f:
+                f.write(f"Time: {time.time()}\n")
+                f.write(f"Uploading: {self.name}\n")
+                f.write(output)
+                dumped_yet = True
+
     def _commit(self, data: Dict[str, Set[str]]):
         self.pronunciation_map = data
         if self.logging:
@@ -187,7 +204,12 @@ class ListQuery(object):
             with open(f"/tmp/{self.name}_high_watermark", 'w') as f:
                 import json
                 json.dump(data, f, indent=4, default=serialize_sets)
-        self.ctx.lists[f"user.{self.name}_list"] = list(data.keys())
+
+#        self.dump_mem()
+#        log.info("before update")
+        self.ctx.lists[f"user.{self.name}_list"] = data.keys()
+#        log.info("after update")
+#        self.dump_mem()
 
     def get_choice(self, incoming) -> str:
         return self.get_choice_and_whether_cycling(incoming)[0]
