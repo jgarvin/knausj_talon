@@ -75,3 +75,11 @@ action(browser.toggle_dev_tools):
 settings():
     key_wait = 10
 
+link: key(escape f)
+
+close tabs to the right: key(alt-shift-r)
+close other tabs: key(alt-shift-o)
+
+
+
+
