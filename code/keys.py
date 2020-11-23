@@ -144,7 +144,7 @@ ctx.lists["self.arrow_key"] = {
 simple_keys = {
     "edge" : "end",
     "slap" : "enter",
-    "axe" : "escape",
+    "cancel" : "escape",
     "home" : "home",
     "insert" : "insert",
     "leaf" : "pagedown",
@@ -152,7 +152,6 @@ simple_keys = {
     "pow" : "space",
     "scoot" : "tab"
 }
-
 
 alternate_keys = {
     "knock": "backspace",
