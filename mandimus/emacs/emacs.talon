@@ -68,6 +68,7 @@ get status: key(ctrl-t g)
 
 open terminal: user.emacs_lisp("(etc-start-or-open-terminal)")
 open temp: user.emacs_lisp("(md-create-temp-file \"temp\")")
+open tramp: key(ctrl-c s t)
 
 magnify: key(ctrl-t ctrl-+)
 demagnify: key(ctrl-t ctrl--)
@@ -92,8 +93,8 @@ help syntax: key(ctrl-h s)
 help bindings: key(ctrl-h s)
 inspect character: key(ctrl-u ctrl-t =)
 
-axe: user.emacs_query("(setq unread-command-events (append unread-command-events (list ?\\C-g)))")
-super axe: key(ctrl-g)
+cancel: user.emacs_query("(setq unread-command-events (append unread-command-events (list ?\\C-g)))")
+super cancel: key(ctrl-g)
 eval: key(ctrl-t ctrl-e)
 start macro: key(F3)
 mack: key(F4)
@@ -112,6 +113,7 @@ copy <user.emacs_unit>: user.emacs_copy(emacs_unit)
 cut <user.emacs_unit>: user.emacs_cut(emacs_unit)
 mark <user.emacs_unit>: user.emacs_mark(emacs_unit)
 comment <user.emacs_unit>: user.emacs_comment(emacs_unit)
+rectangle: key(ctrl-t space)
 
 # only here to override generic_editor definitions
 copy: user.emacs_copy("")
@@ -208,3 +210,12 @@ inquisition:
     key(b)
 
 fasten <user.text>: user.emacs_insert_no_space(text)
+
+prior: key(alt-p)
+future: key(alt-n)
+history: key(alt-r)
+interrupt: key(ctrl-c ctrl-c)
+exit: key(ctrl-d)
+prompt up: key(ctrl-c ctrl-p)
+prompt down: key(ctrl-c ctrl-n)
+
