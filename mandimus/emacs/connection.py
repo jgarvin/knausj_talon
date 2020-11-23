@@ -56,8 +56,8 @@ class CommandClient(object):
     def tryConnect(self):
         if not self.sock:
             self.makeSocket()
-
-        self.sock.settimeout(0.50)
+            
+        self.sock.settimeout(2)
         try:
             self.sock.connect((self.host, self.port))
             log.info("Connected to emacs!")
