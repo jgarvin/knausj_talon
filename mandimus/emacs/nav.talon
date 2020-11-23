@@ -14,7 +14,7 @@ graph: key(alt-})
 go <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-char 1 %c)", unmodified_key)
 doog <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-char -1 %c)", unmodified_key)
 
-function: key(ctrl-alt-a)
+#function: key(ctrl-alt-a)
 
 snug: user.emacs_lisp("(md-find-indentation-change 1 '>)")
 guns: user.emacs_lisp("(md-find-indentation-change -1 '>)")
@@ -29,9 +29,9 @@ load <user.unmodified_key>: user.emacs_char_cmd("(jump-to-register %c)", unmodif
 previous: user.emacs_lisp("(md-get-previous-instance-of-symbol)")
 next: user.emacs_lisp("(md-get-next-instance-of-symbol)")
 
-line <user.unmodified_key>: user.emacs_char_cmd("(md-find-line-starting-with-char 1 %c)", unmodified_key)
-nile <user.unmodified_key>: user.emacs_char_cmd("(md-find-line-starting-with-char -1 %c)", unmodified_key)
-sym <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-symbol-starting-with-char nil %c)", unmodified_key)
+line <user.unmodified_key>$: user.emacs_char_cmd("(md-find-line-starting-with-char 1 %c)", unmodified_key)
+nile <user.unmodified_key>$: user.emacs_char_cmd("(md-find-line-starting-with-char -1 %c)", unmodified_key)
+sim <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-symbol-starting-with-char nil %c)", unmodified_key)
 miss <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-symbol-starting-with-char t %c)", unmodified_key)
 
 lookup: key(alt-.)
