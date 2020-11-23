@@ -46,7 +46,7 @@ toggle trace: key(ctrl-c ctrl-f)
 
 plain open file: key(ctrl-t ctrl-f)
 alternate file: key(ctrl-t ctrl-v)
-recent files: key(ctrl-c ctrl-e)
+recent files: user.emacs_lisp("(recentf-open-files)")
 sudo open file: key(ctrl-c o s)
 
 man page: user.minibuffer("man")
