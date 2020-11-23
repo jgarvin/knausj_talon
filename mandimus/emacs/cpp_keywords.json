@@ -117,5 +117,6 @@
     "set",
     ["unique_ptr", "unique pointer"],
     ["unordered_map", "unordered map"],
-    "vector"
+    "vector",
+    ["__attribute__((noinline))", "no inline"]
 ]
