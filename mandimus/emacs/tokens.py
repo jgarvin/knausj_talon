@@ -15,6 +15,10 @@ class TokenNames(ListQuery):
         ListQuery.__init__(self, mod, ctx, "token_name", f"md-global-symbol-cache", capture_required=True)
 #        self.logging = True
 
+    def _filter(self, string):
+        return (ListQuery._filter(self, string)
+                or (string.isalpha() and string.lower() == string))
+
     def _current_choice(self) -> str:
         return runEmacsCmd("(substring-no-properties (let ((sym (thing-at-point 'symbol))) (if sym sym \"\")))").strip().strip('"')
 
