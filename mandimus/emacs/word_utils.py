@@ -3,17 +3,49 @@ import re, string
 
 UPPER = 0
 LOWER = 1
-OTHER = 2
+PUNCTUATION = 2
+OTHER = 3
 
-def category(c):
+def category(c, punctuation_is_other=True):
     if c in string.ascii_uppercase:
         return UPPER
     elif c in string.ascii_lowercase:
         return LOWER
+    elif c in string.punctuation and not punctuation_is_other:
+        return PUNCTUATION
     else:
         return OTHER
 
-def decamelize(word):
+def count_category_transitions(word):
+    last_category = None
+    count = 0
+    for c in word:
+        cat = category(c, punctuation_is_other=False)
+        if last_category is not None and cat != last_category:
+            count += 1
+        last_category = cat
+    return count
+
+def decamelize_words_only(word):
+    word_list = []
+    building_word = []
+    last_category = None
+    for c in word:
+        switched = (category(c) == UPPER and last_category == LOWER)
+        switched = (switched or (category(c) == LOWER and last_category == UPPER))
+        if switched and building_word:
+            word_list.append("".join(building_word))
+            building_word = []
+        building_word.append(c)
+        last_category = category(c)
+
+    if building_word:
+        word_list.append("".join(building_word))
+
+    return word_list
+
+
+def decamelize(word, ignore_other=False):
     cat = None
     wordList = []
     buildingWord = []
@@ -27,6 +59,8 @@ def decamelize(word):
 
     for i, c in enumerate(word):
         newCategory = category(c)
+        if ignore_other and newCategory == OTHER:
+            newCategory = cat
         isLast = i == len(word)-1
         if (cat and cat != newCategory) or (newCategory == UPPER and cat == UPPER and mixedCase):
             wordList.append(''.join(buildingWord))
