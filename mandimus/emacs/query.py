@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from talon import Module, Context, cron
+from talon import Module, Context, cron, resource
 from typing import Union, List, Dict, TypeVar, Set, Tuple, Optional
 from user.knausj_talon.mandimus.emacs.connection import runEmacsCmd
-from user.knausj_talon.mandimus.emacs.word_utils import decamelize
+from user.knausj_talon.mandimus.emacs.word_utils import decamelize, decamelize_words_only, count_category_transitions
 from user.knausj_talon.code.keys import alphabet
 import logging as log
 import re
@@ -12,16 +12,57 @@ import string
 from copy import copy
 import functools
 from pprint import pprint
+import json
+import math
 
 # TODO: normalize pronunciations based on homophones
 # TODO: normalize pronunciations by removing redundant S's
 
+with resource.open("bigrams.json", 'r') as f:
+    bigrams = json.load(f)
+
+with resource.open("/usr/share/dict/words", 'r') as f:
+    english_words = f.readlines()
+    english_words = {word.strip().lower() for word in english_words}
+    english_words.add("profiler")
+
+bigrams_total = sum([v for b,v in bigrams.items()])
+
+def compute_average_entropy(s):
+    global bigrams, bigrams_total
+    total = 0
+    for bigram in zip(s, s[1:]):
+        if " " in bigram:
+            continue
+        # treat any missing bigrams as very rare
+        apparent_bigram = bigram if bigram in bigrams else "zx"
+        p = bigrams[apparent_bigram] / bigrams_total
+        total += (p*math.log(p, 2))
+    e = -total / len(s)
+    log.info(f"Word: {s} Entropy: {e}")
+    return e
+
 word_substitutions = {
-    "py" : "pie"
+    "py" : "pie",
+    "ptr" : "pointer"
 }
 word_substitutions.update({v:k for k,v in alphabet.items()})
 
 delete_punctuation = "".maketrans(string.punctuation, " "*len(string.punctuation))
+
+def is_float_str(word: str) -> bool:
+    try:
+        float(word)
+        return True
+    except ValueError:
+        return False
+
+def is_hex_str(word: str) -> bool:
+    try:
+        int(word, 16)
+        return True
+    except ValueError:
+        return False
 
 def get_string_list(output):
     "Parses string representation of emacslisp list of strings and returns python list of strings"
@@ -48,6 +89,9 @@ ones_and_teens = ["zero", "one", "two", "three", "four", "five", "six", "seven",
                   "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
 tens = ["", "", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"]
 
+def is_number_word(s):
+    return s in ones_and_teens or s in tens
+
 def translate_number(digits_string):
     """Translate a string of digits to words describing a series of
 numbers between 0-99. So 1050 becomes ten fifty. Necessary because
@@ -69,8 +113,38 @@ wav2letter doesn't understand digits directly."""
             result += [ones]
         return result
 
+transition_filtered = set()
+entropy_filtered = set()
+
+@functools.lru_cache(maxsize=None)
+def decompose_word(word: str) -> List[str]:
+    "Breakup words that dont have separators, e.g. 'foxbrownhouse' -> ['fox', 'brown', 'house']"
+    subwords = []
+    for i in range(len(word)):
+        for j in range(len(word)-1):
+            subword = word[i:j+2]
+            if subword.lower() in english_words and len(subword) > 2:
+                subwords.append(subword)
+
+    r = []
+    if not subwords:
+        r = [word]
+    else:
+        longest_subword = max(subwords, key=lambda x: len(x))
+        loc = word.index(longest_subword)
+        before = word[:loc]
+        after = word[loc+len(longest_subword):]
+        if before:
+            r.extend(decompose_word(before))
+        r.append(longest_subword)
+        if after:
+            r.extend(decompose_word(after))
+
+    return r
+
 @functools.lru_cache(maxsize=None)
 def make_pronouncable(item: str) -> Tuple[str,...]:
+    log.info(f"item: {item}")
     "Transform string into a list of words."
     debug = False
     if debug: log.info(f"item: {item}")
@@ -80,27 +154,104 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     words = ''.join([c if c in string.printable else ' ' for c in words if c in string.printable])
     if debug: log.info(f"words2: {words}")
     words = words.split()
+
     if debug: log.info(f"words3: {words}")
-    words = [decamelize(word) for word in words]
+    log.info(f"before decompose: {words}")
+    new_words = []
+    for word in words:
+        new_words.extend(decompose_word(word))
+    words = new_words
+    log.info(f"after decompose: {words}")
+
+    # If there are too many category transitions in a word, it's
+    # probably garbage like a hash. We want to filter these out before
+    # we decamelize, because decamelize will turn these into many small
+    # words none of which is obviously high entropy.
+    if debug: log.info(f"words3.5: {words}")
+    before = len(words)
+    oldwords = words
+    newwords = []
+    for word in words:
+        score = count_category_transitions(word)/len(word)
+        if score >= 0.51:
+            if word not in transition_filtered:
+                log.info(f"Transition filtered word: {word} Score: {count_category_transitions(word)}/{len(word)}={count_category_transitions(word)/len(word)}")
+                transition_filtered.add(word)
+            continue
+        newwords.append(word)
+    words = newwords
+
+    # Even having filtered out words with too many category
+    # transitions, we can still have random garbage that stays within
+    # a single category, so filter on entropy as well, but with a
+    # higher threshold.
+    if debug: log.info(f"words3.75: {words}")
+    newwords = []
+    for word in words:
+        if compute_average_entropy(word) > 9.16e-7:
+            if word not in entropy_filtered:
+                log.info(f"Entropy early filtered word: {word} Score: {compute_average_entropy(word)}")
+                entropy_filtered.add(word)
+            continue
+        newwords.append(word)
+    words = newwords
+
     if debug: log.info(f"words4: {words}")
+    words = [decamelize(word) for word in words]
     new_words = []
     for word in words:
         new_words.extend(word)
     words = new_words
+
     if debug: log.info(f"words5: {words}")
     words = [word.strip() for word in words]
     if debug: log.info(f"words6: {words}")
     words = [word.lower() for word in words]
     if debug: log.info(f"words7: {words}")
     words = [word_substitutions[word] if word in word_substitutions else word for word in words]
+
+    # Even having filtered out words with too many category
+    # transitions, we can still have random garbage that stays within
+    # a single category, so filter on entropy as well.
+    newwords = []
+    for word in words:
+        if compute_average_entropy(word) > 8.78e-7:
+            if word not in entropy_filtered:
+                log.info(f"Entropy late filtered word: {word} Score: {compute_average_entropy(word)}")
+                entropy_filtered.add(word)
+            continue
+        newwords.append(word)
+    words = newwords
+
+
     if debug: log.info(f"words8: {words}")
     words = [" ".join(translate_number(word)) if word.isnumeric() else word for word in words]
+
+    # When we calculate subsets we want numbers to append to most
+    # recent word, otherwise number of subsets explodes. So:
+    # "foo three five bar four"
+    # becomes ["foo three five", "bar four"]
+    # Which is way fewer subsets to deal with.
+    newwords = []
+    streak = 0
+    for word in words:
+        if is_number_word(word) and newwords and streak < 3:
+            newwords[-1] += " " + word
+            streak += 1
+        else:
+            streak = 0
+            newwords.append(word)
+    words = newwords
+
     if debug: log.info(f"words9: {words}")
     return tuple(words)
 
 def make_subset_pronunciation_map(item: str) -> Dict[str, str]:
     SUBSET_LIMIT = 8 # prevent subset size explosion for very long strings
-    return {" ".join(subset) : item for subset in get_subsets(make_pronouncable(item)[:SUBSET_LIMIT])}
+    pronunciation = make_pronouncable(item)
+    if not pronunciation: # can happen if all words are high entropy
+        return {}
+    return {" ".join(subset) : item for subset in get_subsets(pronunciation[:SUBSET_LIMIT])}
 
 def get_pronunciation_map(items: [str]) -> Dict[str, Set[str]]:
     """Takes list of items we'd like to dictate and makes them
@@ -173,11 +324,25 @@ class ListQuery(object):
         processed = self._post_process(output)
         self._commit(processed)
 
+    def _filter(self, string):
+        return (is_float_str(string)
+                or is_hex_str(string)
+                or sum(c.isalpha() for c in string) < 2
+                or string.isnumeric())
+
     def _post_process(self, data: str) -> Dict[str, Set[str]]:
         strings = get_string_list(data)
+        strings = [s for s in strings if not self._filter(s)]
+#        for s in strings:
+#            log.info(f"{s}: {compute_average_entropy(s)}")
         if self.allow_subsets:
             return get_pronunciation_map(strings)
-        return {" ".join(make_pronouncable(s)):{s} for s in strings}
+        al = {}
+        for s in strings:
+            pronunciation = make_pronouncable(s)
+            if pronunciation:
+                al[" ".join(pronunciation)] = set(s)
+        return al
 
     def dump_mem(self):
         import objgraph
