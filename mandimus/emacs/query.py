@@ -24,7 +24,17 @@ with resource.open("bigrams.json", 'r') as f:
 with resource.open("/usr/share/dict/words", 'r') as f:
     english_words = f.readlines()
     english_words = {word.strip().lower() for word in english_words}
-    english_words.add("profiler")
+    english_words.update([
+        "const",
+        "profiler",
+        "uncast",
+        "rehash",
+        "tuple",
+        "utils",
+        "util",
+        "dict"
+        "sigsegv"
+    ])
 
 bigrams_total = sum([v for b,v in bigrams.items()])
 
@@ -44,7 +54,9 @@ def compute_average_entropy(s):
 
 word_substitutions = {
     "py" : "pie",
-    "ptr" : "pointer"
+    "ptr" : "pointer",
+    "trd" : "trade",
+    "sigsegv" : "sig seg v"
 }
 word_substitutions.update({v:k for k,v in alphabet.items()})
 
@@ -155,19 +167,42 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     if debug: log.info(f"words2: {words}")
     words = words.split()
 
+    # decamelize, but only let dictionary words through
     if debug: log.info(f"words3: {words}")
-    log.info(f"before decompose: {words}")
+    possible_words = []
+    for word in words:
+        possible_words.extend(decamelize(word))
+    if debug: log.info(f"possible words: {possible_words}")
+    new_words = []
+    buffering = []
+    for word in possible_words:
+        if word.lower() in english_words and len(word) > 2:
+            log.info(f"In dict: {word.lower()}")
+            if buffering:
+                new_words.append("".join(buffering))
+                buffering = []
+            new_words.append(word)
+        else:
+            log.info(f"Not in dict: {word.lower()}")
+            buffering.append(word)
+    if buffering:
+        new_words.append("".join(buffering))
+        buffering = []
+    words = new_words
+
+    if debug: log.info(f"words4: {words}")
+    if debug: log.info(f"before decompose: {words}")
     new_words = []
     for word in words:
         new_words.extend(decompose_word(word))
     words = new_words
-    log.info(f"after decompose: {words}")
+    if debug: log.info(f"after decompose: {words}")
 
     # If there are too many category transitions in a word, it's
     # probably garbage like a hash. We want to filter these out before
     # we decamelize, because decamelize will turn these into many small
     # words none of which is obviously high entropy.
-    if debug: log.info(f"words3.5: {words}")
+    if debug: log.info(f"words4.5: {words}")
     before = len(words)
     oldwords = words
     newwords = []
@@ -185,23 +220,16 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     # transitions, we can still have random garbage that stays within
     # a single category, so filter on entropy as well, but with a
     # higher threshold.
-    if debug: log.info(f"words3.75: {words}")
+    if debug: log.info(f"words4.75: {words}")
     newwords = []
     for word in words:
-        if compute_average_entropy(word) > 9.16e-7:
+        if word.lower() not in english_words and compute_average_entropy(word) > 8.5e-7:
             if word not in entropy_filtered:
                 log.info(f"Entropy early filtered word: {word} Score: {compute_average_entropy(word)}")
                 entropy_filtered.add(word)
             continue
         newwords.append(word)
     words = newwords
-
-    if debug: log.info(f"words4: {words}")
-    words = [decamelize(word) for word in words]
-    new_words = []
-    for word in words:
-        new_words.extend(word)
-    words = new_words
 
     if debug: log.info(f"words5: {words}")
     words = [word.strip() for word in words]
@@ -215,7 +243,7 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     # a single category, so filter on entropy as well.
     newwords = []
     for word in words:
-        if compute_average_entropy(word) > 8.78e-7:
+        if word.lower() not in english_words and compute_average_entropy(word) > 8e-7:
             if word not in entropy_filtered:
                 log.info(f"Entropy late filtered word: {word} Score: {compute_average_entropy(word)}")
                 entropy_filtered.add(word)
