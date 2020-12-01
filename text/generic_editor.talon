@@ -60,12 +60,10 @@ edge:
 
 # selecting
 select line:
-    edit.line_start()
-    edit.extend_line_end()
+    edit.select_line()
 
 select all:
     edit.select_all()
-
 
 select left:
     edit.extend_left()
@@ -78,6 +76,9 @@ select up:
 
 select down:
     edit.extend_line_down()
+
+select word:
+    edit.select_word()
 
 select word left:
     edit.extend_word_left()
@@ -122,6 +123,13 @@ pitch:
 
 top side: key(ctrl-home)
 bottom: key(ctrl-end)
+
+# clear word:
+#     edit.delete_word()
+
+# clear word left:
+#     edit.extend_word_left()
+#     edit.delete()
 
 # clear up:
 #     edit.extend_line_up()
@@ -176,36 +184,43 @@ copy all:
 # copy down:
 #     edit.extend_down()
 #     edit.copy()
+
+copy word:
+    edit.select_word()
+    edit.copy()
+
 copy word left:
     edit.extend_word_left()
     edit.copy()
+
 copy word right:
     edit.extend_word_right()
     edit.copy()
+
+copy line:
+    edit.select_line()
+    edit.copy()
+
 #cut commands
 cut everything:
     edit.select_all()
-    edit.cut()
-#to do: do we want these variants
-# cut left:
-#      edit.select_all()
-#      edit.cut()
-# cut right:
-#      edit.select_all()
-#      edit.cut()
-# cut up:
-#      edit.select_all()
-#     edit.cut()
-# cut down:
-#     edit.select_all()
-#     edit.cut()
-# cut word left:
-#     edit.extend_word_left()
-#     edit.cut()
-# cut word right:
-#     edit.extend_word_right()
-#     edit.cut()
+    edit.cut()    
 
+cut word:
+    edit.select_word()
+    edit.cut()
+
+cut word left:
+    edit.extend_word_left()
+    edit.cut()
+
+cut word right:
+    edit.extend_word_right()
+    edit.cut()
+
+cut line:
+    edit.select_line()
+    edit.cut()
 
 magnify: key(ctrl-+)
 demagnify: key(ctrl--)
