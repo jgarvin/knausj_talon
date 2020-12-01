@@ -25,6 +25,8 @@ with resource.open("/usr/share/dict/words", 'r') as f:
     english_words = f.readlines()
     english_words = {word.strip().lower() for word in english_words}
     english_words.update([
+        "arg",
+        "args",
         "const",
         "profiler",
         "uncast",
@@ -33,12 +35,23 @@ with resource.open("/usr/share/dict/words", 'r') as f:
         "utils",
         "util",
         "dict"
-        "sigsegv"
+        "sigsegv",
+        "multicast",
+        "matic",
+        "microbench"
     ])
+    to_remove = [
+        "oma"
+    ]
+    for word in to_remove:
+        try:
+            english_words.remove(word)
+        except KeyError:
+            continue
 
 bigrams_total = sum([v for b,v in bigrams.items()])
 
-def compute_average_entropy(s):
+def compute_average_entropy_impl(s):
     global bigrams, bigrams_total
     total = 0
     for bigram in zip(s, s[1:]):
@@ -49,14 +62,23 @@ def compute_average_entropy(s):
         p = bigrams[apparent_bigram] / bigrams_total
         total += (p*math.log(p, 2))
     e = -total / len(s)
-    log.info(f"Word: {s} Entropy: {e}")
+#    log.info(f"Word: {s} Entropy: {e}")
     return e
+
+def compute_average_entropy(s):
+    s = s.lower()
+    # deal with cute naming like "kube" instead of "cube"
+    return min(compute_average_entropy_impl(s),
+               compute_average_entropy_impl(s.replace("c", "k")),
+               compute_average_entropy_impl(s.replace("k", "c")))
 
 word_substitutions = {
     "py" : "pie",
     "ptr" : "pointer",
     "trd" : "trade",
-    "sigsegv" : "sig seg v"
+    "sigsegv" : "sig seg v",
+    "matic" : "mattick",
+    "ctl" : "control"
 }
 word_substitutions.update({v:k for k,v in alphabet.items()})
 
@@ -156,9 +178,9 @@ def decompose_word(word: str) -> List[str]:
 
 @functools.lru_cache(maxsize=None)
 def make_pronouncable(item: str) -> Tuple[str,...]:
-    log.info(f"item: {item}")
     "Transform string into a list of words."
     debug = False
+    if debug: log.info(f"item: {item}")
     if debug: log.info(f"item: {item}")
     words = item.translate(delete_punctuation)
     if debug: log.info(f"words1: {words}")
@@ -176,14 +198,14 @@ def make_pronouncable(item: str) -> Tuple[str,...]:
     new_words = []
     buffering = []
     for word in possible_words:
-        if word.lower() in english_words and len(word) > 2:
-            log.info(f"In dict: {word.lower()}")
+        if (word.lower() in english_words and len(word) > 2) or word in words:
+#            log.info(f"In dict: {word.lower()}")
             if buffering:
                 new_words.append("".join(buffering))
                 buffering = []
             new_words.append(word)
         else:
-            log.info(f"Not in dict: {word.lower()}")
+#            log.info(f"Not in dict: {word.lower()}")
             buffering.append(word)
     if buffering:
         new_words.append("".join(buffering))
@@ -367,9 +389,11 @@ class ListQuery(object):
             return get_pronunciation_map(strings)
         al = {}
         for s in strings:
+#            log.info(f"Make pronuncable: {s}")
             pronunciation = make_pronouncable(s)
             if pronunciation:
-                al[" ".join(pronunciation)] = set(s)
+#                log.info(f"pronunciation: {pronunciation}")
+                al[" ".join(pronunciation)] = set([s])
         return al
 
     def dump_mem(self):
