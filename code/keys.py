@@ -118,7 +118,7 @@ ctx.lists["self.symbol_key"] = {
     "under score": "_",
     "dots": ":",
     "larp": "(",
-    "ralp": ")",
+    "railp": ")",
     "lace": "{",
     "race": "}",
     "lesser": "<",
