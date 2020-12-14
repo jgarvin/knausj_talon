@@ -38,10 +38,17 @@ with resource.open("/usr/share/dict/words", 'r') as f:
         "sigsegv",
         "multicast",
         "matic",
-        "microbench"
+        "microbench",
+        "vec",
+        "deque",
+        "radix",
+        "jupyter",
+        "numexpr",
     ])
     to_remove = [
-        "oma"
+        "oma",
+        "ra",
+        "dix",
     ]
     for word in to_remove:
         try:
@@ -77,10 +84,11 @@ word_substitutions = {
     "ptr" : "pointer",
     "trd" : "trade",
     "sigsegv" : "sig seg v",
-    "matic" : "mattick",
+    "matic" : "matt tick",
     "ctl" : "control"
 }
 word_substitutions.update({v:k for k,v in alphabet.items()})
+english_words.update(word_substitutions.values())
 
 delete_punctuation = "".maketrans(string.punctuation, " "*len(string.punctuation))
 
@@ -471,3 +479,11 @@ class ListQuery(object):
         return (choice, cycling)
 
 #log.info(get_subsets([1, 2, 3, 4]))
+
+# good test tokens:
+# /py3_import_tests.sh
+# VENDOR_PACKAGE_ARCHIVE_FILE=libhugetlbfs-2
+# py|sh|bash|png|js|css|json|cfg
+# 552|INFO
+# create_cc_toolchain_config_info
+# drwxr-xr-x
