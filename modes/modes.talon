@@ -14,6 +14,10 @@ mode: all
 #     speech.disable()
 #     user.engine_sleep()
 snore: speech.disable()
+(hello|hey) beautiful: speech.disable()
+(hello|hey) gorgeous: speech.disable()
+(hello|hey) love muffin: speech.disable()
+(hello|hey) love of my life: speech.disable()
 really wake up: speech.enable()
 # begin: these commands are really for windows & mac with Dragon.
 #dragon mode: user.dragon_mode()
