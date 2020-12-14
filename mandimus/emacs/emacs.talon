@@ -6,6 +6,7 @@ app: emacs
 dired copy: key(ctrl-c alt-w)
 dired cut: key(ctrl-c ctrl-w)
 dired paste: key(ctrl-c ctrl-y)
+dired create: key(+)
 
 # replace w/ real folder cmd later
 folder: key(ctrl-t ctrl-j)
@@ -109,10 +110,10 @@ exchange: key(ctrl-t ctrl-t)
 select: key(ctrl-=)
 contract: key(alt-=)
 
-copy <user.emacs_unit>: user.emacs_copy(emacs_unit)
-cut <user.emacs_unit>: user.emacs_cut(emacs_unit)
-mark <user.emacs_unit>: user.emacs_mark(emacs_unit)
-comment <user.emacs_unit>: user.emacs_comment(emacs_unit)
+[<user.emacs_unit>] copy: user.emacs_copy(emacs_unit or "")
+[<user.emacs_unit>] cut: user.emacs_cut(emacs_unit or "")
+[<user.emacs_unit>] mark: user.emacs_mark(emacs_unit or "")
+[<user.emacs_unit>] comment: user.emacs_comment(emacs_unit or "")
 rectangle: key(ctrl-t space)
 
 # only here to override generic_editor definitions
