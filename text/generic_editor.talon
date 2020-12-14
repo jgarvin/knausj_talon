@@ -109,17 +109,25 @@ indent [more]:
 clear line:
     edit.delete_line()
 
-knock:
+knock [<number_small>]:
+    x = number_small or 1
     key(backspace)
+    repeat(x - 1)
 
-bonk:
+bonk [<number_small>]:
+    x = number_small or 1
     key(delete)
+    repeat(x - 1)
 
-chip:
+chip [<number_small>]:
+    x = number_small or 1
     key(ctrl-backspace)
+    repeat(x - 1)
 
-pitch:
+pitch [<number_small>]:
+    x = number_small or 1
     key(ctrl-delete)
+    repeat(x - 1)
 
 top side: key(ctrl-home)
 bottom: key(ctrl-end)
@@ -197,14 +205,14 @@ copy word right:
     edit.extend_word_right()
     edit.copy()
 
-copy line:
-    edit.select_line()
-    edit.copy()
+#copy line:
+#    edit.select_line()
+#    edit.copy()
 
 #cut commands
 cut everything:
     edit.select_all()
-    edit.cut()    
+    edit.cut()
 
 cut word:
     edit.select_word()
@@ -218,9 +226,9 @@ cut word right:
     edit.extend_word_right()
     edit.cut()
 
-cut line:
-    edit.select_line()
-    edit.cut()
+#cut line:
+#    edit.select_line()
+#    edit.cut()
 
 magnify: key(ctrl-+)
 demagnify: key(ctrl--)

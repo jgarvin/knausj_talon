@@ -184,3 +184,8 @@ def number_signed(m):
     "number_small", rule=f"({alt_digits} | {alt_teens} | {alt_tens} [{alt_digits}])"
 )
 def number_small(m): return int(parse_number(list(m)))
+
+@mod.capture(
+   rule=f"(one|two|three|four|five|six|seven|eight|nine|ten)"
+)
+def number_tiny(m) -> int: return int(parse_number(list(m)))
