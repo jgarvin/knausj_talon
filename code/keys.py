@@ -3,7 +3,7 @@ from typing import Set
 from talon import Module, Context, actions
 import sys
 
-default_alphabet = "air boy coo dog echo fox golf his igloo john king lima mike knave osh pig quid road shoe toss use vict was plex yes zulu".split(
+default_alphabet = "air boy ku dog echo fox golf his igloo john king lima mike knave osh pig quid road shoe toss use vict was plex yes zulu".split(
     " "
 )
 letters_string = "abcdefghijklmnopqrstuvwxyz"
@@ -155,7 +155,7 @@ ctx.lists["self.symbol_key"] = {
 
 ctx.lists["self.number_key"] = dict(zip(default_digits, numbers))
 ctx.lists["self.arrow_key"] = {
-    "slide": "down",
+    "fall": "down",
     "left": "left",
     "right": "right",
     "hike": "up",
@@ -169,7 +169,7 @@ simple_keys = {
     "insert" : "insert",
     "leaf" : "pagedown",
     "feel" : "pageup",
-    "pow" : "space",
+    "oof" : "space",
     "scoot" : "tab"
 }
 

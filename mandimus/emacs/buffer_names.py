@@ -24,9 +24,9 @@ class BufferNames(ListQuery):
     def switch_most_recent(self):
         runEmacsCmd("(md-switch-to-next-buffer-in-list %s)" % self.base_query, queryOnly=False)
 
-    def switch_buffer(self, incoming: Optional[str] = None):
+    def switch_buffer(self, incoming: str = ""):
         log.info("***********************************")
-        if incoming is None:
+        if incoming is None or incoming == "":
             self.switch_no_choice()
             return
         buffer_name = self.get_choice(incoming)

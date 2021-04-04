@@ -1,3 +1,7 @@
+another:
+    key(,)
+    key(space)
+
 find it:
     edit.find()
 
@@ -13,25 +17,34 @@ pro:
 # "mark slide 40" marks and then slides 40, but only if you define
 # your commands to include the number this way.
 
-left [<number_small>]:
-    x = number_small or 1
-    edit.left()
-    repeat(x - 1)
+#left [<number_small>]:
+#    x = number_small or 1
+#    edit.left()
+#    repeat(x - 1)
 
-right [<number_small>]:
-    x = number_small or 1
-    edit.right()
-    repeat(x - 1)
+left: edit.left()
 
-hike [<number_small>]:
-    x = number_small or 1
-    edit.up()
-    repeat(x - 1)
 
-slide [<number_small>]:
-    x = number_small or 1
-    edit.down()
-    repeat(x - 1)
+#right [<number_small>]:
+#    x = number_small or 1
+#    edit.right()
+#    repeat(x - 1)
+
+right: edit.right()
+
+#hike [<number_small>]:
+#    x = number_small or 1
+#    edit.up()
+#    repeat(x - 1)
+
+hike: edit.up()
+
+#slide [<number_small>]:
+#    x = number_small or 1
+#    edit.down()
+#    repeat(x - 1)
+
+fall: edit.down()
 
 home:
     edit.line_start()
@@ -109,25 +122,33 @@ indent [more]:
 clear line:
     edit.delete_line()
 
-knock [<number_small>]:
-    x = number_small or 1
-    key(backspace)
-    repeat(x - 1)
+#knock [<number_small>]:
+#    x = number_small or 1
+#    key(backspace)
+#    repeat(x - 1)
 
-bonk [<number_small>]:
-    x = number_small or 1
-    key(delete)
-    repeat(x - 1)
+knock: key(backspace)
 
-chip [<number_small>]:
-    x = number_small or 1
-    key(ctrl-backspace)
-    repeat(x - 1)
+#bonk [<number_small>]:
+#    x = number_small or 1
+#    key(delete)
+#    repeat(x - 1)
 
-pitch [<number_small>]:
-    x = number_small or 1
-    key(ctrl-delete)
-    repeat(x - 1)
+bonk: key(delete)
+
+#chip [<number_small>]:
+#    x = number_small or 1
+#    key(ctrl-backspace)
+#    repeat(x - 1)
+
+chip: key(ctrl-backspace)
+
+#pitch [<number_small>]:
+#    x = number_small or 1
+#    key(ctrl-delete)
+#    repeat(x - 1)
+
+pitch: key(ctrl-delete)
 
 top side: key(ctrl-home)
 bottom: key(ctrl-end)

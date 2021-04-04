@@ -56,7 +56,7 @@ class CommandClient(object):
     def tryConnect(self):
         if not self.sock:
             self.makeSocket()
-            
+
         self.sock.settimeout(2)
         try:
             self.sock.connect((self.host, self.port))
@@ -127,6 +127,7 @@ class CommandClient(object):
             raise
 
         out = out.decode('utf-8')
+#        log.info(f"Length: {len(out)}")
         return out
 
     def runCmd(self, command, inFrame=True, dolog=False, allowError=False, queryOnly=True):
@@ -190,24 +191,32 @@ def _choose_command_client(win):
 
         key = None
         try:
+            log.info("1")
             window_name = win.title
             host_and_port_string = window_name.rsplit("mandimus[")[1]
             host_and_port_string = host_and_port_string.split("]")[0]
             key = host_and_port_string.split(":")
             key[1] = int(key[1])
             key = tuple(key)
+            log.info("2")
         except IndexError:
             # "emacs" not always in window title, this may just not be an emacs window
             #log.error(f"Couldn't get host and port from emacs window: {win.title}")
             return
 
+        log.info("3")
         if key is None:
+            log.info("3.5")
             return
 
+        log.info("4")
         if key not in allCommandClients:
+            log.info("5")
             allCommandClients[key] = CommandClient(key[0], key[1])
 
+        log.info("6")            
         if clientInst is not allCommandClients[key]:
+            log.info("7")            
             log.info("Switching to emacs: {}".format(key))
             clientInst = allCommandClients[key]
 

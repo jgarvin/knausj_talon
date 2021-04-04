@@ -12,7 +12,7 @@ gruff: key(alt-{)
 graph: key(alt-})
 
 go <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-char 1 %c)", unmodified_key)
-doog <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-char -1 %c)", unmodified_key)
+come <user.unmodified_key>: user.emacs_char_cmd("(md-move-up-to-char -1 %c)", unmodified_key)
 
 #function: key(ctrl-alt-a)
 

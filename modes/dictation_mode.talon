@@ -4,7 +4,7 @@ mode: dictation
 <user.text>: auto_insert(text)
 enter: auto_insert("new-line")
 period: auto_insert(".")
-(comma | kama): 
+(comma | kama):
     auto_insert(",")
 question mark: auto_insert("?")
 (bang | exclamation [mark]): auto_insert("!")
@@ -13,20 +13,20 @@ colon: auto_insert(":")
 # user.dictate no longer exists, so I'm not sure what this was supposed to do.
 #space: user.dictate(" ")
 (semi colon | semicolon): auto_insert(";")
-cap <user.text>: 
+cap <user.text>:
     result = user.formatted_text(user.text, "CAPITALIZE_FIRST_WORD")
     auto_insert(result)
 #navigation
 hike <number_small> lines:
     edit.up()
     repeat(number_small - 1)
-slide <number_small> lines:
+fall <number_small> lines:
     edit.down()
     repeat(number_small - 1)
-go left <number_small> words: 
+go left <number_small> words:
     edit.word_left()
     repeat(number_small - 1)
-go right <number_small> words: 
+go right <number_small> words:
     edit.word_right()
     repeat(number_small - 1)
 go line start: edit.line_start()
@@ -60,7 +60,7 @@ clear right <number_small> characters:
     edit.extend_right()
     repeat(number_small - 1)
     edit.delete()
-#formatting 
+#formatting
 formatted <user.format_text>:
     user.auto_format_pause()
     auto_insert(format_text)

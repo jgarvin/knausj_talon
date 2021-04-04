@@ -23,8 +23,12 @@ keyword_files = {
 
 keywords = {}
 
+from pprint import pprint
+pprint(keyword_files)
 for mode, filename in keyword_files.items():
     mode_keywords = {}
+    print(mode)
+    print(filename)
     with resource.open(filename, 'r') as f:
         data = json.load(f)
         log.info(f"Loaded keywords for mode: {mode}")

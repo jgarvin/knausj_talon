@@ -12,7 +12,7 @@ ctx = Context()
 
 class TokenNames(ListQuery):
     def __init__(self, mod, ctx):
-        ListQuery.__init__(self, mod, ctx, "token_name", f"md-global-symbol-cache", capture_required=True)
+        ListQuery.__init__(self, mod, ctx, "token_name", f"md-global-symbol-cache")
 #        self.logging = True
 
     def _filter(self, string):

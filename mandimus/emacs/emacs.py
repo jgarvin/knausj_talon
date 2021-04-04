@@ -25,7 +25,7 @@ app: emacs
 def emacs_unit(m) -> str:
     "Returns name of unit that can be cut/copy/pasted, e.g. word, symbol, line, filename, etc."
 
-@ctx.capture("user.emacs_unit", rule="(word | symbol | line | filename | paragraph | buffer)")
+@ctx.capture("user.emacs_unit", rule="[(rest of | until here)] (word | symbol | line | filename | paragraph | buffer | string | group | thesis | brackets | braces)")
 def emacs_unit_impl(m) -> str:
     return " ".join(list(m))
 
@@ -33,7 +33,21 @@ def emacs_unit_impl(m) -> str:
 class emacs_main_overrides:
     def insert(text: str):
         # t t = capital check, space check
+        if len(text) == 1:
+            # lets smartparens {} wrapping on selection work, and +
+            # to create directories in dired
+            actions.key(text) 
+            return
         runEmacsCmd(f"(md-insert-text \"{text}\" t t)")
+
+def transform_unit(unit):
+    w = unit.split()
+    log.info(w)
+    if len(w) == 3 and w[0:2] == ["rest", "of"]:
+        return ("rest-of", w[2])
+    if len(w) == 3 and w[0:2] == ["until", "here"]:
+        return ("until-here", w[2])
+    return ("regular", unit)
 
 @mod.action_class
 class Actions:
@@ -72,7 +86,10 @@ class Actions:
         if unit is None or unit == "":
             actions.key("ctrl-space")
             return
-        runEmacsCmd(f"(md-mark-thing '{unit})")
+        mode, unit = transform_unit(unit)
+        log.info(mode)
+        log.info(unit)
+        runEmacsCmd(f"(md-mark-thing '{unit} '{mode})")
 
     def emacs_copy(unit: Optional[str]):
         "Copy a unit of text in emacs."
@@ -91,6 +108,12 @@ class Actions:
         if unit is not None and unit != "":
             Actions.emacs_mark(unit)
         actions.key("alt-;")
+
+    def emacs_indent(unit: Optional[str]):
+        "Indent a unit of text in emacs."
+        if unit is not None and unit != "":
+            Actions.emacs_mark(unit)
+        actions.key("tab")
 
     def emacs_goto_next(text: str):
         "Go to next instance of text."

@@ -27,6 +27,7 @@ with resource.open("/usr/share/dict/words", 'r') as f:
     english_words.update([
         "arg",
         "args",
+        "allocator",
         "const",
         "profiler",
         "uncast",
@@ -44,6 +45,10 @@ with resource.open("/usr/share/dict/words", 'r') as f:
         "radix",
         "jupyter",
         "numexpr",
+        "mandimus",
+        "todo",
+        "assign",
+        "structs"
     ])
     to_remove = [
         "oma",
@@ -85,9 +90,18 @@ word_substitutions = {
     "trd" : "trade",
     "sigsegv" : "sig seg v",
     "matic" : "matt tick",
-    "ctl" : "control"
+    "ctl" : "control",
+    "lib" : "library",
+    "std" : "standard",
+    "bld" : "build",
+    "msg" : "message",
+    "sig" : "signal",
+    "hdr" : "header",
+    "memcpy" : "memory copy",
+    "memcpys" : "memory copies",
 }
 word_substitutions.update({v:k for k,v in alphabet.items()})
+english_words.update(word_substitutions.keys())
 english_words.update(word_substitutions.values())
 
 delete_punctuation = "".maketrans(string.punctuation, " "*len(string.punctuation))
@@ -336,7 +350,7 @@ def serialize_sets(obj):
 dumped_yet = False
 
 class ListQuery(object):
-    def __init__(self, mod: Module, ctx: Context, name: str, cmd: str, interval_ms=1000, allow_subsets=True, capture_required=False):
+    def __init__(self, mod: Module, ctx: Context, name: str, cmd: str, interval_ms=1000, allow_subsets=True):
         self.name = name
         self.cmd = cmd
         self.interval_ms = interval_ms
@@ -361,8 +375,6 @@ class ListQuery(object):
 
         # then we implement them on the context
         r = f"{{user.{name}_list}}"
-        if not capture_required:
-            r = "[" + r + "]"
         @ctx.capture(f"user.{name}", rule=r)
         def local_capture(m) -> Optional[str]:
             if not m:

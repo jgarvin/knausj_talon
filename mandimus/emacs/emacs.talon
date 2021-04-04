@@ -27,7 +27,7 @@ list buffs: key(ctrl-t ctrl-b ctrl-t o)
 
 key {user.emacs_language_keywords}: insert(emacs_language_keywords)
 go key {user.emacs_language_keywords}: user.emacs_goto_next(emacs_language_keywords)
-doog key {user.emacs_language_keywords}: user.emacs_goto_previous(emacs_language_keywords)
+come key {user.emacs_language_keywords}: user.emacs_goto_previous(emacs_language_keywords)
 
 switch project: key(ctrl-c p p)
 root folder: key(ctrl-c p d)
@@ -68,6 +68,7 @@ list packages: user.minibuffer("list-packages")
 get status: key(ctrl-t g)
 
 open terminal: user.emacs_lisp("(etc-start-or-open-terminal)")
+open temporary: user.emacs_lisp("(md-create-temp-file \"temp\")")
 open temp: user.emacs_lisp("(md-create-temp-file \"temp\")")
 open tramp: key(ctrl-c s t)
 
@@ -96,7 +97,7 @@ inspect character: key(ctrl-u ctrl-t =)
 
 cancel: user.emacs_query("(setq unread-command-events (append unread-command-events (list ?\\C-g)))")
 super cancel: key(ctrl-g)
-eval: key(ctrl-t ctrl-e)
+evaluate: key(ctrl-t ctrl-e)
 start macro: key(F3)
 mack: key(F4)
 other: key(ctrl-t o)
@@ -112,8 +113,9 @@ contract: key(alt-=)
 
 [<user.emacs_unit>] copy: user.emacs_copy(emacs_unit or "")
 [<user.emacs_unit>] cut: user.emacs_cut(emacs_unit or "")
-[<user.emacs_unit>] mark: user.emacs_mark(emacs_unit or "")
+[<user.emacs_unit>] (mark | marks): user.emacs_mark(emacs_unit or "")
 [<user.emacs_unit>] comment: user.emacs_comment(emacs_unit or "")
+[<user.emacs_unit>] indent: user.emacs_indent(emacs_unit or "")
 rectangle: key(ctrl-t space)
 
 # only here to override generic_editor definitions
@@ -136,7 +138,6 @@ shift right: user.emacs_lisp("(call-interactively 'python-indent-shift-right)")
 shift left: user.emacs_lisp("(call-interactively 'python-indent-shift-left)")
 
 align regexp: user.minibuffer("align-regexp")
-indent: user.emacs_lisp("(call-interactively 'indent-region)")
 
 capitalize: key(alt-c)
 bigger: key(alt-u)
@@ -219,4 +220,3 @@ interrupt: key(ctrl-c ctrl-c)
 exit: key(ctrl-d)
 prompt up: key(ctrl-c ctrl-p)
 prompt down: key(ctrl-c ctrl-n)
-

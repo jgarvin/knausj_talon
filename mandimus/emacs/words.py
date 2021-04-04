@@ -12,7 +12,7 @@ ctx = Context()
 
 class WordNames(ListQuery):
     def __init__(self, mod, ctx):
-        ListQuery.__init__(self, mod, ctx, "word_name", f"md-global-word-cache", capture_required=True)
+        ListQuery.__init__(self, mod, ctx, "word_name", f"md-global-word-cache")
 #        self.logging = True
 
     def _current_choice(self) -> str:

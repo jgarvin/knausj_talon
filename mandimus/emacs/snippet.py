@@ -13,7 +13,7 @@ ctx = Context()
 
 class Snippets(ListQuery):
     def __init__(self):
-        ListQuery.__init__(self, mod, ctx, "snippet", "(md-get-snippet-names)", allow_subsets=False, capture_required=True)
+        ListQuery.__init__(self, mod, ctx, "snippet", "(md-get-snippet-names)", allow_subsets=False)
 
 SNIPPETS = Snippets()
 
